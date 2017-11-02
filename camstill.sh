@@ -6,6 +6,7 @@ WIDTH=640
 HEIGHT=480
 FRAMES=8
 ENC=jpeg
+EXTRAS=""
 
 while [[ $# -gt 0 ]]
 do
@@ -31,8 +32,14 @@ do
       shift 
       shift
       ;;
+      -t|--text)
+      TEXT="$2"
+      EXTRAS="! textoverlay text=\"$TEXT\""
+      shift 
+      shift
+      ;;
    esac
 done
 
-gst-launch-1.0 v4l2src device=/dev/video0 num-buffers=$FRAMES ! video/x-raw,format=NV12,width=$WIDTH,height=$HEIGHT ! videoconvert ! ${ENC}enc ! multifilesink location=$FILENAME
+gst-launch-1.0 v4l2src device=/dev/video0 num-buffers=$FRAMES ! video/x-raw,format=NV12,width=$WIDTH,height=$HEIGHT ! videoconvert $EXTRAS ! ${ENC}enc ! multifilesink location=$FILENAME
 gpicview $FILENAME
